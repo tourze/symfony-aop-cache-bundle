@@ -7,7 +7,7 @@
     "php": "^8.1",
     "symfony/framework-bundle": "^6.4",
     "tourze/doctrine-helper": "0.0.*",
-    "tourze/backtrace-helper": "0.0.*",
+    "tourze/backtrace-helper": "～0.0.5",
     "tourze/symfony-cache-hotkey-bundle": "0.0.*",
     "tourze/symfony-cron-job-bundle": "0.0.*",
     "tourze/symfony-aop-bundle": "0.0.*",
