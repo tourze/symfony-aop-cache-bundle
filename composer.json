@@ -17,7 +17,7 @@
     "tourze/backtrace-helper": "~0.0.5",
     "tourze/symfony-cache-hotkey-bundle": "0.0.*",
     "tourze/symfony-cron-job-bundle": "0.0.*",
-    "tourze/symfony-aop-bundle": "0.0.*",
+    "tourze/symfony-aop-bundle": "~0.0.3",
     "twig/twig": "^3.13|^4.0",
     "psr/cache": "^2.0 || ^3.0"
   },
