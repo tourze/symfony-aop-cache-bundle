@@ -1,124 +1,90 @@
 # AopCacheBundle
 
-AopCacheBundle 是一个基于 Symfony 的缓存实现包,通过 AOP 技术提供声明式的缓存能力。它允许开发者使用简单的注解来为方法添加缓存功能,支持缓存标签、TTL 控制和强制更新。
+AopCacheBundle is a Symfony bundle that provides advanced, annotation-driven caching capabilities using AOP (Aspect-Oriented Programming). It enables developers to add cache logic to methods declaratively, supporting cache tags, TTL, custom keys, and forced cache refresh.
 
-## 核心功能
+![Packagist Version](https://img.shields.io/packagist/v/tourze/symfony-aop-cache-bundle)
+![License](https://img.shields.io/github/license/tourze/symfony-aop-cache-bundle)
 
-### 声明式缓存
+## Features
 
-使用 `#[Cacheble]` 注解标记需要缓存的方法:
+- Annotation-based declarative cache (`#[Cacheble]`, `#[CachePut]`)
+- Custom cache key with Twig syntax
+- Cache tags for batch management and cleaning
+- TTL (expiration) control
+- Forced cache refresh support
+- Extensible aspects and cache logic
 
-```php
-#[Cacheble]
-public function getUserProfile(int $userId): array 
-{
-    // 此方法的结果会被缓存
-    // ...
-}
+## Installation
+
+- Requires PHP >= 8.1
+- Requires Symfony >= 6.4
+- Requires Redis extension
+
+```shell
+composer require tourze/symfony-aop-cache-bundle
 ```
 
-### 自定义缓存键
+## Quick Start
 
-支持使用 Twig 模板语法定义缓存键:
-
-```php
-#[Cacheble(key: "profile_{{ userId }}")]
-public function getUserProfile(int $userId): array 
-{
-    // 使用 userId 作为缓存键的一部分
-    // ...
-}
-```
-
-### 缓存标签
-
-支持为缓存添加标签,便于批量管理:
+1. Add `#[Cacheble]` annotation to your method:
 
 ```php
-#[Cacheble(tags: ["user", "profile_{{ userId }}"])]
-public function getUserProfile(int $userId): array 
-{
-    // 使用多个标签
-    // ...
-}
-```
+use Tourze\Symfony\AopCacheBundle\Attribute\Cacheble;
 
-### 强制更新缓存
-
-使用 `#[CachePut]` 注解强制更新缓存:
-
-```php
-#[CachePut(key: "profile_{{ userId }}")]
-public function updateUserProfile(int $userId, array $data): array 
-{
-    // 结果会被强制写入缓存
-    // ...
-}
-```
-
-## 使用方法
-
-1. 在方法上添加 `#[Cacheble]` 注解:
-
-```php
-use AopCacheBundle\Attribute\Cacheble;
-
-class UserService 
+class UserService
 {
     #[Cacheble(ttl: 3600, tags: ["user"])]
-    public function getUserProfile(int $userId): array 
+    public function getUserProfile(int $userId): array
     {
-        // 业务逻辑
-    }
-
-    #[CachePut(key: "profile_{{ userId }}")]
-    public function updateProfile(int $userId, array $data): array 
-    {
-        // 更新逻辑
+        // business logic
     }
 }
 ```
 
-2. 缓存键模板支持:
-   - 访问方法参数: `{{ paramName }}`
-   - 访问连接点信息: `{{ joinPoint.method }}`, `{{ joinPoint.class }}`
-   - 支持所有 Twig 语法特性
+2. Use custom cache key and tags:
 
-## 重要说明
+```php
+#[Cacheble(key: "profile_{{ userId }}", tags: ["profile", "user_{{ userId }}"])]
+public function getUserProfile(int $userId): array
+{
+    // ...
+}
+```
 
-1. 缓存限制
-   - 不支持缓存资源类型
-   - 不支持缓存回调函数
-   - 不支持缓存实体对象
-   - 建议缓存简单数据类型或普通数组
+3. Force cache refresh:
 
-2. 缓存标签
-   - 支持使用类名作为标签
-   - 支持使用 Twig 模板生成标签
-   - 便于批量清理相关缓存
+```php
+use Tourze\Symfony\AopCacheBundle\Attribute\CachePut;
 
-3. 性能考虑
-   - 缓存键的生成会有少量开销
-   - 复杂的 Twig 模板可能影响性能
-   - 建议为频繁访问的方法添加缓存
+#[CachePut(key: "profile_{{ userId }}")]
+public function updateProfile(int $userId, array $data): array
+{
+    // ...
+}
+```
 
-4. 缓存清理
-   - 可以通过标签批量清理缓存
-   - 建议设置合理的 TTL
-   - 考虑使用 `CachePut` 在更新时刷新缓存
+4. Cache key template:
+   - Access parameters: `{{ paramName }}`
+   - Access join point info: `{{ joinPoint.method }}`, `{{ joinPoint.class }}`
+   - Supports all Twig syntax
 
-## 扩展开发
+## Documentation
 
-1. 自定义缓存处理
-   - 继承 `CacheTrait` 
-   - 实现自定义的缓存逻辑
+- Support batch cache cleaning by tag (`cache:redis-clear-tags` command)
+- Do not cache resource types, callbacks, or entity objects; cache simple types or arrays
+- Custom aspects and cache logic supported (extend `CacheTrait`, `CachebleAspect`, `CachePutAspect`)
 
-2. 自定义切面
-   - 继承 `CachebleAspect` 或 `CachePutAspect`
-   - 重写相关方法以自定义缓存行为
+## Contributing
 
-## 调试建议
+1. Ensure code passes tests before submitting issues or PRs
+2. Follow PSR-12 coding style
+3. Read core class docs and comments first
 
-1. 开启日志记录以跟踪缓存操作
-2. 使用缓存调试工具查看缓存状态
-3. 监控缓存命中率
+## License
+
+- MIT License
+- (c) tourze
+
+## Changelog
+
+See [CHANGELOG.md]
