@@ -20,7 +20,8 @@
     "tourze/doctrine-helper": "0.0.*",
     "tourze/symfony-aop-bundle": "~0.0.4",
     "tourze/symfony-cache-hotkey-bundle": "0.0.*",
-    "twig/twig": "^3.13|^4.0"
+    "twig/twig": "^3.13|^4.0",
+    "tourze/symfony-cron-job-bundle": "0.1.*"
   },
   "require-dev": {
     "maglnet/composer-require-checker": "^4",
