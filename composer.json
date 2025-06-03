@@ -16,7 +16,7 @@
     "symfony/http-kernel": "^6.4",
     "symfony/var-exporter": "^6.4",
     "symfony/yaml": "^6.4 || ^7.1",
-    "tourze/backtrace-helper": "~0.0.5",
+    "tourze/backtrace-helper": "0.1.*",
     "tourze/doctrine-helper": "0.0.*",
     "tourze/symfony-aop-bundle": "~0.0.4",
     "tourze/symfony-cache-hotkey-bundle": "0.0.*",
