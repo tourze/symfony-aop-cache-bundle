@@ -16,9 +16,10 @@ use Tourze\Symfony\CacheHotKey\Service\HotkeySmartCache;
 use Tourze\Symfony\CronJob\Attribute\AsCronTask;
 
 #[AsCronTask('10 5 * * *')]
-#[AsCommand(name: 'cache:redis-clear-tags', description: '定期清理Redis缓存Tag')]
+#[AsCommand(name: self::NAME, description: '定期清理Redis缓存Tag')]
 class CacheClearRedisTagsCommand extends Command
 {
+    public const NAME = 'cache:redis-clear-tags';
     public function __construct(
         #[Autowire(service: 'cache.app')]
         private readonly TagAwareAdapterInterface $cache,
@@ -31,7 +32,12 @@ class CacheClearRedisTagsCommand extends Command
     {
         $pool = $this->cache;
         if ($pool instanceof TraceableTagAwareAdapter) {
-            $pool = $this->cache->getPool();
+            // TraceableTagAwareAdapter does not have getPool() method
+            // We need to access the decorated adapter through reflection
+            $reflection = new \ReflectionClass($pool);
+            $property = $reflection->getProperty('pool');
+            $property->setAccessible(true);
+            $pool = $property->getValue($pool);
         }
         if ($pool instanceof HotkeySmartCache) {
             $pool = $pool->getDecorated();
@@ -82,7 +88,7 @@ class CacheClearRedisTagsCommand extends Command
 
         do {
             // 获取标签下的部分缓存键
-            $members = $redis->sScan($tagKey, $cursorTag, null, $batchSize);
+            $members = $redis->sscan($tagKey, $cursorTag, null, $batchSize);
             if ($members === false) {
                 continue;
             }
@@ -111,7 +117,7 @@ class CacheClearRedisTagsCommand extends Command
                 $output->writeln(sprintf('清理标签：%s => %s', $tagKey, implode(', ', $keysToRemove)));
                 $redis->multi(\Redis::PIPELINE);
                 foreach ($keysToRemove as $invalidKey) {
-                    $redis->sRem($tagKey, $invalidKey);
+                    $redis->srem($tagKey, $invalidKey);
                 }
                 $redis->exec();
             }

@@ -13,7 +13,7 @@ trait CacheTrait
     private function getAttribute(JoinPoint $joinPoint): ?Cacheble
     {
         $method = new \ReflectionMethod($joinPoint->getInstance(), $joinPoint->getMethod());
-        /** @var \ReflectionAttribute[] $attributes */
+        /** @var list<\ReflectionAttribute<Cacheble>> $attributes */
         $attributes = $method->getAttributes(Cacheble::class);
         if (empty($attributes)) {
             // 这里返回null，则不进行缓存处理
@@ -29,7 +29,7 @@ trait CacheTrait
     private function buildKey(JoinPoint $joinPoint): ?string
     {
         $attribute = $this->getAttribute($joinPoint);
-        if (!$attribute) {
+        if ($attribute === null) {
             return null;
         }
         // 如果没声明缓存key的话，我们根据方法名/参数自动生成一个
@@ -59,12 +59,12 @@ trait CacheTrait
     private function getTags(JoinPoint $joinPoint): ?array
     {
         $attribute = $this->getAttribute($joinPoint);
-        if (!$attribute) {
+        if ($attribute === null) {
             return null;
         }
 
         $tags = $attribute->tags;
-        if (!$tags) {
+        if ($tags === null || empty($tags)) {
             return null;
         }
 
@@ -91,7 +91,7 @@ trait CacheTrait
             return false;
         }
         // 实体需要忽略，问题比较多
-        if (is_object($var) && EntityDetector::isEntityClass($var)) {
+        if (is_object($var) && EntityDetector::isEntityClass(get_class($var))) {
             return false;
         }
         return true;

@@ -140,7 +140,6 @@ class CacheTraitTest extends TestCase
     public function testGetTags(): void
     {
         $tags = $this->traitInstance->exposeGetTags($this->joinPoint);
-        $this->assertIsArray($tags);
         $this->assertContains('test_tag', $tags);
         $this->assertContains('user_test_value', $tags);
 

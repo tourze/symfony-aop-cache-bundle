@@ -15,7 +15,6 @@ class CachebleTest extends TestCase
 
         $this->assertNull($cacheble->key);
         $this->assertNull($cacheble->ttl);
-        $this->assertIsArray($cacheble->tags);
         $this->assertEmpty($cacheble->tags);
     }
 
