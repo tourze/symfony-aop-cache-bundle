@@ -15,7 +15,7 @@ use Symfony\Component\VarExporter\LazyObjectInterface;
 use Tourze\Symfony\CacheHotKey\Service\HotkeySmartCache;
 use Tourze\Symfony\CronJob\Attribute\AsCronTask;
 
-#[AsCronTask('10 5 * * *')]
+#[AsCronTask(expression: '10 5 * * *')]
 #[AsCommand(name: self::NAME, description: '定期清理Redis缓存Tag')]
 class CacheClearRedisTagsCommand extends Command
 {

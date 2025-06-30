@@ -6,21 +6,32 @@ use Symfony\Contracts\Cache\ItemInterface;
 use Tourze\DoctrineHelper\CacheHelper;
 use Tourze\DoctrineHelper\EntityDetector;
 use Tourze\Symfony\Aop\Model\JoinPoint;
+use Tourze\Symfony\AopCacheBundle\Attribute\CacheAttributeInterface;
 use Tourze\Symfony\AopCacheBundle\Attribute\Cacheble;
+use Tourze\Symfony\AopCacheBundle\Attribute\CachePut;
 
 trait CacheTrait
 {
-    private function getAttribute(JoinPoint $joinPoint): ?Cacheble
+    private function getAttribute(JoinPoint $joinPoint): ?CacheAttributeInterface
     {
         $method = new \ReflectionMethod($joinPoint->getInstance(), $joinPoint->getMethod());
-        /** @var list<\ReflectionAttribute<Cacheble>> $attributes */
-        $attributes = $method->getAttributes(Cacheble::class);
-        if (empty($attributes)) {
-            // 这里返回null，则不进行缓存处理
-            return null;
+        
+        // 先尝试 Cacheble 属性
+        /** @var list<\ReflectionAttribute<Cacheble>> $cachebleAttributes */
+        $cachebleAttributes = $method->getAttributes(Cacheble::class);
+        if (!empty($cachebleAttributes)) {
+            return $cachebleAttributes[0]->newInstance();
         }
-
-        return $attributes[0]->newInstance();
+        
+        // 再尝试 CachePut 属性
+        /** @var list<\ReflectionAttribute<CachePut>> $cachePutAttributes */
+        $cachePutAttributes = $method->getAttributes(CachePut::class);
+        if (!empty($cachePutAttributes)) {
+            return $cachePutAttributes[0]->newInstance();
+        }
+        
+        // 没有找到任何缓存属性
+        return null;
     }
 
     /**
@@ -33,7 +44,7 @@ trait CacheTrait
             return null;
         }
         // 如果没声明缓存key的话，我们根据方法名/参数自动生成一个
-        $key = $attribute->key ?: $joinPoint->getUniqueId();
+        $key = $attribute->getKey() ?? $joinPoint->getUniqueId();
 
         $template = $this->twig->createTemplate($key);
         return 'cache_'
@@ -49,8 +60,8 @@ trait CacheTrait
     private function getTTL(JoinPoint $joinPoint): ?int
     {
         $attribute = $this->getAttribute($joinPoint);
-        $ttl = $attribute?->ttl;
-        return $ttl ?: 60;
+        $ttl = $attribute?->getTtl();
+        return $ttl ?? 60;
     }
 
     /**
@@ -63,7 +74,7 @@ trait CacheTrait
             return null;
         }
 
-        $tags = $attribute->tags;
+        $tags = $attribute->getTags();
         if ($tags === null || empty($tags)) {
             return null;
         }

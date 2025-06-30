@@ -10,6 +10,7 @@ use Symfony\Component\Cache\Adapter\TagAwareAdapter;
 use Symfony\Contracts\Cache\CacheInterface;
 use Tourze\Symfony\Aop\Model\JoinPoint;
 use Tourze\Symfony\AopCacheBundle\Aspect\CacheTrait;
+use Tourze\Symfony\AopCacheBundle\Attribute\CacheAttributeInterface;
 use Tourze\Symfony\AopCacheBundle\Attribute\Cacheble;
 use Twig\Environment;
 use Twig\Loader\ArrayLoader;
@@ -26,7 +27,7 @@ class CacheTraitTestClass
     }
 
     // 暴露特性中的方法以便测试
-    public function exposeGetAttribute(JoinPoint $joinPoint): ?Cacheble
+    public function exposeGetAttribute(JoinPoint $joinPoint): ?CacheAttributeInterface
     {
         return $this->getAttribute($joinPoint);
     }
@@ -109,7 +110,7 @@ class CacheTraitTest extends TestCase
     {
         // 测试带 Cacheble 注解的方法
         $attribute = $this->traitInstance->exposeGetAttribute($this->joinPoint);
-        $this->assertInstanceOf(Cacheble::class, $attribute);
+        $this->assertInstanceOf(CacheAttributeInterface::class, $attribute);
 
         // 测试不带注解的方法
         $attribute = $this->traitInstance->exposeGetAttribute($this->regularJoinPoint);

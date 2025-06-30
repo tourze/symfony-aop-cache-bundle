@@ -8,7 +8,7 @@ namespace Tourze\Symfony\AopCacheBundle\Attribute;
  * 这个注解依赖AOP
  */
 #[\Attribute(\Attribute::TARGET_METHOD)]
-class Cacheble
+class Cacheble implements CacheAttributeInterface
 {
     public function __construct(
         public ?string $key = null,
@@ -16,5 +16,20 @@ class Cacheble
         public ?array $tags = [],
     )
     {
+    }
+
+    public function getKey(): ?string
+    {
+        return $this->key;
+    }
+
+    public function getTtl(): ?int
+    {
+        return $this->ttl;
+    }
+
+    public function getTags(): ?array
+    {
+        return $this->tags;
     }
 }

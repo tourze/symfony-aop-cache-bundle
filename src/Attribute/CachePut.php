@@ -7,12 +7,27 @@ namespace Tourze\Symfony\AopCacheBundle\Attribute;
  * 这个注解依赖AOP
  */
 #[\Attribute(\Attribute::TARGET_METHOD)]
-class CachePut
+class CachePut implements CacheAttributeInterface
 {
     public function __construct(
         public ?string $key = null,
         public ?int $ttl = null,
     )
     {
+    }
+
+    public function getKey(): ?string
+    {
+        return $this->key;
+    }
+
+    public function getTtl(): ?int
+    {
+        return $this->ttl;
+    }
+
+    public function getTags(): ?array
+    {
+        return [];
     }
 }
