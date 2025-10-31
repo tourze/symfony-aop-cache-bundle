@@ -4,10 +4,15 @@ declare(strict_types=1);
 
 namespace Tourze\Symfony\AopCacheBundle\Tests\Attribute;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Tourze\Symfony\AopCacheBundle\Attribute\Cacheble;
 
-class CachebleTest extends TestCase
+/**
+ * @internal
+ */
+#[CoversClass(Cacheble::class)]
+final class CachebleTest extends TestCase
 {
     public function testCachebleDefaultValues(): void
     {

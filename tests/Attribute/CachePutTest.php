@@ -4,10 +4,15 @@ declare(strict_types=1);
 
 namespace Tourze\Symfony\AopCacheBundle\Tests\Attribute;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Tourze\Symfony\AopCacheBundle\Attribute\CachePut;
 
-class CachePutTest extends TestCase
+/**
+ * @internal
+ */
+#[CoversClass(CachePut::class)]
+final class CachePutTest extends TestCase
 {
     public function testCachePutDefaultValues(): void
     {

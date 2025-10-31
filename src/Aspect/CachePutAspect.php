@@ -15,14 +15,13 @@ use Twig\Environment;
 #[Aspect]
 class CachePutAspect
 {
+    use CacheTrait;
+
     public function __construct(
         private readonly CacheInterface $cache,
         private readonly Environment $twig,
-    )
-    {
+    ) {
     }
-
-    use CacheTrait;
 
     /**
      * 执行成功后，我们保存结果到缓存去
@@ -31,7 +30,7 @@ class CachePutAspect
     public function saveCache(JoinPoint $joinPoint): void
     {
         $key = $this->buildKey($joinPoint);
-        if ($key === null) {
+        if (null === $key) {
             return;
         }
 

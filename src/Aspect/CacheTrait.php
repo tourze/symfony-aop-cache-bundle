@@ -15,21 +15,21 @@ trait CacheTrait
     private function getAttribute(JoinPoint $joinPoint): ?CacheAttributeInterface
     {
         $method = new \ReflectionMethod($joinPoint->getInstance(), $joinPoint->getMethod());
-        
+
         // 先尝试 Cacheble 属性
         /** @var list<\ReflectionAttribute<Cacheble>> $cachebleAttributes */
         $cachebleAttributes = $method->getAttributes(Cacheble::class);
-        if (!empty($cachebleAttributes)) {
+        if (count($cachebleAttributes) > 0) {
             return $cachebleAttributes[0]->newInstance();
         }
-        
+
         // 再尝试 CachePut 属性
         /** @var list<\ReflectionAttribute<CachePut>> $cachePutAttributes */
         $cachePutAttributes = $method->getAttributes(CachePut::class);
-        if (!empty($cachePutAttributes)) {
+        if (count($cachePutAttributes) > 0) {
             return $cachePutAttributes[0]->newInstance();
         }
-        
+
         // 没有找到任何缓存属性
         return null;
     }
@@ -40,13 +40,14 @@ trait CacheTrait
     private function buildKey(JoinPoint $joinPoint): ?string
     {
         $attribute = $this->getAttribute($joinPoint);
-        if ($attribute === null) {
+        if (null === $attribute) {
             return null;
         }
         // 如果没声明缓存key的话，我们根据方法名/参数自动生成一个
         $key = $attribute->getKey() ?? $joinPoint->getUniqueId();
 
         $template = $this->twig->createTemplate($key);
+
         return 'cache_'
             . trim($template->render([
                 'joinPoint' => $joinPoint,
@@ -61,21 +62,25 @@ trait CacheTrait
     {
         $attribute = $this->getAttribute($joinPoint);
         $ttl = $attribute?->getTtl();
+
         return $ttl ?? 60;
     }
 
     /**
      * 获取缓存标签
      */
+    /**
+     * @return array<string>|null
+     */
     private function getTags(JoinPoint $joinPoint): ?array
     {
         $attribute = $this->getAttribute($joinPoint);
-        if ($attribute === null) {
+        if (null === $attribute) {
             return null;
         }
 
         $tags = $attribute->getTags();
-        if ($tags === null || empty($tags)) {
+        if (null === $tags || count($tags) === 0) {
             return null;
         }
 
@@ -92,6 +97,7 @@ trait CacheTrait
             }
             $tags[$k] = $v;
         }
+
         return $tags;
     }
 
@@ -105,6 +111,7 @@ trait CacheTrait
         if (is_object($var) && EntityDetector::isEntityClass(get_class($var))) {
             return false;
         }
+
         return true;
     }
 
@@ -120,16 +127,17 @@ trait CacheTrait
 
         $this->cache->get($key, function (ItemInterface $item) use ($result, $joinPoint) {
             $ttl = $this->getTTL($joinPoint);
-            if ($ttl !== null) {
+            if (null !== $ttl) {
                 $item->expiresAfter($this->getTTL($joinPoint));
             }
 
             $tags = $this->getTags($joinPoint);
-            if ($tags !== null) {
+            if (null !== $tags) {
                 $item->tag($tags);
             }
 
             $item->set($result);
+
             return $result;
         });
     }

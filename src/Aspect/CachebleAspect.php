@@ -17,15 +17,14 @@ use Twig\Environment;
 #[Aspect]
 class CachebleAspect
 {
+    use CacheTrait;
+
     public function __construct(
         private readonly CacheInterface $cache,
         private readonly CacheItemPoolInterface $cacheItemPool,
         private readonly Environment $twig,
-    )
-    {
+    ) {
     }
-
-    use CacheTrait;
 
     /**
      * 在开始执行前，我们加一层缓存。如果能查找到的话，我们就直接返回不继续执行方法了
@@ -34,7 +33,7 @@ class CachebleAspect
     public function findByCache(JoinPoint $joinPoint): void
     {
         $key = $this->buildKey($joinPoint);
-        if ($key === null) {
+        if (null === $key) {
             return;
         }
 
@@ -57,7 +56,7 @@ class CachebleAspect
     public function saveCache(JoinPoint $joinPoint): void
     {
         $key = $this->buildKey($joinPoint);
-        if ($key === null) {
+        if (null === $key) {
             return;
         }
 

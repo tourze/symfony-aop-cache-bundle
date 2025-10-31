@@ -21,6 +21,9 @@ class AopCacheBundle extends Bundle
     {
         parent::boot();
 
-        Backtrace::addProdIgnoreFiles((new \ReflectionClass(HotkeySmartCache::class))->getFileName());
+        $fileName = (new \ReflectionClass(HotkeySmartCache::class))->getFileName();
+        if (false !== $fileName) {
+            Backtrace::addProdIgnoreFiles($fileName);
+        }
     }
 }

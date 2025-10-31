@@ -7,5 +7,7 @@ services:
   # 如果确认要使用自动扫描、自动注册，建议尽可能将要扫描的目录路径收缩，不要设置那么大的范围
   Tourze\Symfony\AopCacheBundle\Aspect\:
     resource: '../../Aspect/'
+    public: true
   Tourze\Symfony\AopCacheBundle\Command\:
     resource: '../../Command/'
+    public: true

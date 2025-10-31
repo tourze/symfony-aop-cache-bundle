@@ -4,12 +4,17 @@ declare(strict_types=1);
 
 namespace Tourze\Symfony\AopCacheBundle\Tests\DependencyInjection;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Tourze\Symfony\AopCacheBundle\DependencyInjection\CacheCompilerPass;
 
-class CacheCompilerPassTest extends TestCase
+/**
+ * @internal
+ */
+#[CoversClass(CacheCompilerPass::class)]
+final class CacheCompilerPassTest extends TestCase
 {
     public function testProcessWithCacheApp(): void
     {
@@ -31,6 +36,6 @@ class CacheCompilerPassTest extends TestCase
         $compilerPass->process($container);
 
         // 不应抛出异常，仅验证过程完成
-        $this->assertTrue(true);
+        $this->expectNotToPerformAssertions();
     }
 }

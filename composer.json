@@ -1,32 +1,34 @@
 {
   "name": "tourze/symfony-aop-cache-bundle",
-  "description": "AOP缓存支持",
+  "description": "基于AOP的Symfony缓存增强包，提供注解式缓存支持和Redis标签清理功能",
   "type": "symfony-bundle",
   "license": "MIT",
   "require": {
-    "php": "^8.1",
     "ext-redis": "*",
     "psr/cache": "^2.0 || ^3.0",
-    "symfony/cache": "^6.4",
+    "symfony/cache": "^7.3",
     "symfony/cache-contracts": "^3",
-    "symfony/config": "^6.4",
-    "symfony/console": "^6.4",
-    "symfony/dependency-injection": "^6.4",
-    "symfony/framework-bundle": "^6.4",
-    "symfony/http-kernel": "^6.4",
-    "symfony/var-exporter": "^6.4",
-    "symfony/yaml": "^6.4 || ^7.1",
+    "symfony/config": "^7.3",
+    "symfony/console": "^7.3",
+    "symfony/dependency-injection": "^7.3",
+    "symfony/framework-bundle": "^7.3",
+    "symfony/http-kernel": "^7.3",
+    "symfony/var-exporter": "^7.3",
+    "symfony/yaml": "^7.3",
     "tourze/backtrace-helper": "0.1.*",
     "tourze/doctrine-helper": "0.0.*",
     "tourze/symfony-aop-bundle": "~0.0.4",
     "tourze/symfony-cache-hotkey-bundle": "0.0.*",
     "tourze/symfony-cron-job-bundle": "0.1.*",
-    "twig/twig": "^3.13|^4.0"
+    "tourze/symfony-dependency-service-loader": "0.0.*",
+    "twig/twig": "^3.21"
   },
   "require-dev": {
-    "maglnet/composer-require-checker": "^4",
     "phpstan/phpstan": "^2.1",
-    "phpunit/phpunit": "^10.0"
+    "phpunit/phpunit": "^11.5",
+    "tourze/phpunit-symfony-kernel-test": "0.0.*",
+    "tourze/phpunit-symfony-unit-test": "0.0.*",
+    "tourze/symfony-testing-framework": "0.0.*"
   },
   "autoload": {
     "psr-4": {

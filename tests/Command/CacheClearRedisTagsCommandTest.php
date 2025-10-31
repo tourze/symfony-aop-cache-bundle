@@ -4,13 +4,36 @@ declare(strict_types=1);
 
 namespace Tourze\Symfony\AopCacheBundle\Tests\Command;
 
-use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\RunTestsInSeparateProcesses;
+use Symfony\Component\Cache\Adapter\TagAwareAdapterInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Tester\CommandTester;
+use Tourze\PHPUnitSymfonyKernelTest\AbstractCommandTestCase;
 use Tourze\Symfony\AopCacheBundle\Command\CacheClearRedisTagsCommand;
 use Tourze\Symfony\CronJob\Attribute\AsCronTask;
 
-class CacheClearRedisTagsCommandTest extends TestCase
+/**
+ * @internal
+ */
+#[CoversClass(CacheClearRedisTagsCommand::class)]
+#[RunTestsInSeparateProcesses]
+final class CacheClearRedisTagsCommandTest extends AbstractCommandTestCase
 {
+    protected function onSetUp(): void
+    {
+        // 无需额外设置
+    }
+
+    protected function getCommandTester(): CommandTester
+    {
+        $command = self::getService(CacheClearRedisTagsCommand::class);
+        $this->assertInstanceOf(CacheClearRedisTagsCommand::class, $command);
+
+        return new CommandTester($command);
+    }
+
     public function testCommandConfiguration(): void
     {
         // 通过反射验证命令配置
@@ -34,7 +57,7 @@ class CacheClearRedisTagsCommandTest extends TestCase
         $reflection = new \ReflectionClass(CacheClearRedisTagsCommand::class);
 
         // 验证命令是否继承了 Symfony\Component\Console\Command\Command
-        $this->assertTrue($reflection->isSubclassOf(\Symfony\Component\Console\Command\Command::class));
+        $this->assertTrue($reflection->isSubclassOf(Command::class));
 
         // 验证是否有执行方法
         $this->assertTrue($reflection->hasMethod('execute'));
@@ -50,5 +73,17 @@ class CacheClearRedisTagsCommandTest extends TestCase
         $parameters = $constructor->getParameters();
         $this->assertCount(1, $parameters);
         $this->assertEquals('cache', $parameters[0]->getName());
+    }
+
+    public function testCommandExecution(): void
+    {
+        $commandTester = $this->getCommandTester();
+        $exitCode = $commandTester->execute([]);
+
+        // 由于测试环境没有配置 RedisTagAwareAdapter，命令会返回失败
+        $this->assertEquals(Command::FAILURE, $exitCode);
+
+        $output = $commandTester->getDisplay();
+        $this->assertStringContainsString('找不到有效的Redis缓存', $output);
     }
 }
