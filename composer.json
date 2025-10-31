@@ -13,20 +13,21 @@
     "symfony/dependency-injection": "^7.3",
     "symfony/framework-bundle": "^7.3",
     "symfony/http-kernel": "^7.3",
+    "symfony/property-access": "^7.3",
     "symfony/var-exporter": "^7.3",
     "symfony/yaml": "^7.3",
     "tourze/backtrace-helper": "1.*",
     "tourze/doctrine-helper": "0.0.*",
     "tourze/symfony-aop-bundle": "~0.0.4",
     "tourze/symfony-cache-hotkey-bundle": "0.0.*",
-    "tourze/symfony-cron-job-bundle": "0.1.*",
+    "tourze/symfony-cron-job-bundle": "1.0.*",
     "tourze/symfony-dependency-service-loader": "1.*",
     "twig/twig": "^3.21"
   },
   "require-dev": {
     "phpstan/phpstan": "^2.1",
     "phpunit/phpunit": "^11.5",
-    "tourze/phpunit-symfony-kernel-test": "1.*",
+    "tourze/phpunit-symfony-kernel-test": "1.0.*",
     "tourze/phpunit-symfony-unit-test": "1.*"
   },
   "autoload": {
